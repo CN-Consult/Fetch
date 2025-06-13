@@ -232,8 +232,14 @@ class Attachment
         return $result;
     }
 
-    protected function setFileName($text)
-    {
-        $this->filename = MIME::decode($text, Message::$charset);
-    }
+	protected function setFileName($text)
+	{
+		if (preg_match('/^=\?.*\?=$/', $text)) {
+			// decode MIME encoded filename
+			$this->filename = MIME::decode($text, Message::$charset);
+		} else {
+			// use plain UTF-8 directly
+			$this->filename = $text;
+		}
+	}
 }
